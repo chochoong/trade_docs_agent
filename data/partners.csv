@@ -1,0 +1,4 @@
+partner_id,type,name_en,address_en,country,contact,email,phone,default_incoterm,default_place,default_payment,currency
+B001,buyer,GREEN LEAF TRADING LLC,"45 Market St, Los Angeles, CA 90012, USA",US,John Smith,john@example.com,+1-213-000-0000,FOB,"Busan, Korea","T/T 30% in advance, 70% before shipment",USD
+B002,buyer,SAKURA HOME INC.,"2-1-1 Nihonbashi, Chuo-ku, Tokyo 103-0027, Japan",JP,Taro Yamada,yamada@example.com,+81-3-0000-0000,CIF,"Tokyo, Japan","L/C at sight",USD
+S001,supplier,NINGBO BRIGHT MFG CO. LTD,"88 Industrial Rd, Ningbo, Zhejiang, China",CN,Li Wei,liwei@example.com,+86-574-0000-0000,FOB,"Ningbo, China","T/T 30% deposit, 70% against B/L copy",USD

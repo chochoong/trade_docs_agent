@@ -1,0 +1,23 @@
+{
+  "deal_id": "D2026-XXX",
+  "our_role": "seller",
+  "partner_id": "B001",
+  "doc_date": "2026-11-25",
+  "currency": "USD",
+  "incoterm": {"rule": "FOB", "place": "Busan, Korea"},
+  "payment_terms": "T/T 30% in advance, 70% before shipment",
+  "transport_mode": "sea",
+  "port_of_loading": "Busan, Korea",
+  "port_of_discharge": "",
+  "vessel_voyage": "",
+  "etd": "",
+  "eta": "",
+  "freight": 0,
+  "insurance": 0,
+  "shipping_mark": "",
+  "items": [
+    {"sku": "P-100", "qty": 0}
+  ],
+  "doc_remarks": "",
+  "remarks": ""
+}

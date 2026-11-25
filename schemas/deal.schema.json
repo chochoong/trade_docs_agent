@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "trade-docs-agent/deal.schema.json",
+  "title": "Deal (거래 1건)",
+  "description": "무역서류 에이전트의 입력입니다. 커뮤니케이션·협상 에이전트나 원가계산 에이전트가 이 형식으로 거래 정보를 넘깁니다.",
+  "type": "object",
+  "required": ["deal_id", "our_role", "partner_id", "doc_date", "incoterm", "payment_terms", "items"],
+  "properties": {
+    "deal_id": {"type": "string", "pattern": "^[A-Za-z0-9-]+$", "description": "예: D2026-001"},
+    "our_role": {"enum": ["seller", "buyer"], "description": "seller=수출(우리가 판매), buyer=수입(우리가 구매)"},
+    "partner_id": {"type": "string", "description": "data/partners.csv의 partner_id"},
+    "doc_date": {"type": "string", "format": "date"},
+    "currency": {"type": "string", "default": "USD"},
+    "incoterm": {
+      "type": "object",
+      "required": ["rule", "place"],
+      "properties": {
+        "rule": {"enum": ["EXW", "FCA", "CPT", "CIP", "DAP", "DPU", "DDP", "FAS", "FOB", "CFR", "CIF"]},
+        "place": {"type": "string", "description": "예: Busan, Korea"},
+        "version": {"type": "string", "default": "Incoterms 2020"}
+      }
+    },
+    "payment_terms": {"type": "string"},
+    "transport_mode": {"enum": ["sea", "air", "rail", "road", "multimodal"], "default": "sea"},
+    "port_of_loading": {"type": "string"},
+    "port_of_discharge": {"type": "string"},
+    "final_destination": {"type": "string"},
+    "vessel_voyage": {"type": "string"},
+    "etd": {"type": "string", "format": "date"},
+    "eta": {"type": "string", "format": "date"},
+    "freight": {"type": "number", "minimum": 0, "description": "판매가에 포함되는 운임(CFR/CIF/CPT/CIP/D조건)"},
+    "insurance": {"type": "number", "minimum": 0},
+    "pi_validity_days": {"type": "integer"},
+    "shipping_mark": {"type": "string"},
+    "notify_party": {"type": "string"},
+    "lc": {
+      "type": "object",
+      "properties": {
+        "lc_no": {"type": "string"},
+        "issuing_bank": {"type": "string"},
+        "amount": {"type": "number"},
+        "tolerance_pct": {"type": "number", "description": "예: 5 (±5%)"},
+        "latest_shipment_date": {"type": "string", "format": "date"},
+        "expiry_date": {"type": "string", "format": "date"},
+        "partial_shipment": {"type": "boolean"},
+        "goods_description": {"type": "string", "description": "신용장에 적힌 품명 문구 그대로"},
+        "currency": {"type": "string", "description": "신용장 통화(32B). 거래 통화와 같아야 합니다"},
+        "presentation_days": {"type": "integer", "default": 21, "description": "선적 후 서류 제시 기간(48)"},
+        "bl_consignee": {"type": "string", "description": "B/L 수하인 문구(46A) 그대로. 예: TO ORDER OF EXAMPLE BANK TOKYO"}
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sku", "qty"],
+        "properties": {
+          "sku": {"type": "string"},
+          "qty": {"type": "number", "exclusiveMinimum": 0, "description": "계약(PI/PO) 수량"},
+          "unit_price": {"type": "number", "description": "없으면 products.csv 단가를 씁니다"},
+          "shipped_qty": {"type": "number", "description": "실제 선적 수량. CI/PL에 씁니다. 없으면 qty를 씁니다"},
+          "change_reason": {"type": "string", "description": "shipped_qty가 qty와 다를 때 그 사유"},
+          "origin": {"type": "string", "description": "원산지. 없으면 products.csv 값을 씁니다. 수입(buyer) 거래에서는 필수(공급처 서류 기준)"}
+        }
+      }
+    },
+    "doc_remarks": {"type": "string", "description": "PI/CI/PO에 인쇄되는 비고"},
+    "remarks": {"type": "string", "description": "내부 메모. 서류에 인쇄되지 않습니다"},
+    "source": {"type": "object", "description": "이 deal을 보낸 에이전트/사람 정보(추적용)"},
+    "lc_history": {"type": "array", "description": "이전 L/C 내용(Amendment 이력). ingest.py가 기록"},
+    "history": {"type": "array", "description": "받은 이벤트 이력. ingest.py가 기록"}
+  }
+}

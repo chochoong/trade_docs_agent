@@ -1,0 +1,10 @@
+{
+  "event": "price_update",
+  "deal_id": "D2026-004",
+  "currency": "USD",
+  "items": [
+    {"sku": "P-100", "unit_price": 4.65, "basis": "FOB Busan", "landed_cost": 3.41, "margin_pct": 26.7}
+  ],
+  "fx_rate": {"pair": "USD/KRW", "rate": 1390.0, "as_of": "2026-11-26"},
+  "source": {"agent": "cost-agent"}
+}

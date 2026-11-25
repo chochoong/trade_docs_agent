@@ -1,0 +1,18 @@
+{
+  "event": "order_confirmed",
+  "deal_id": "D2026-004",
+  "our_role": "seller",
+  "partner_id": "B001",
+  "doc_date": "2026-11-26",
+  "currency": "USD",
+  "incoterm": {"rule": "FOB", "place": "Busan, Korea"},
+  "payment_terms": "T/T 30% in advance, 70% before shipment",
+  "transport_mode": "sea",
+  "port_of_loading": "Busan, Korea",
+  "port_of_discharge": "Los Angeles, USA",
+  "items": [
+    {"sku": "P-100", "qty": 960},
+    {"sku": "P-300", "qty": 240}
+  ],
+  "source": {"agent": "communication-agent", "ref": "buyer email 2026-11-26 'PO confirmed'"}
+}

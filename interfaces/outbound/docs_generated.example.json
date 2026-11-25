@@ -1,0 +1,181 @@
+{
+  "event": "docs_generated",
+  "deal_id": "D2026-001",
+  "generated_at": "2026-11-25T10:28:21",
+  "status": "approved",
+  "our_role": "seller",
+  "partner": {
+    "partner_id": "B001",
+    "name": "GREEN LEAF TRADING LLC",
+    "country": "US"
+  },
+  "incoterm": {
+    "rule": "FOB",
+    "place": "Busan, Korea"
+  },
+  "payment_terms": "T/T 30% in advance, 70% before shipment",
+  "shipment": {
+    "transport_mode": "sea",
+    "port_of_loading": "Busan, Korea",
+    "port_of_discharge": "Los Angeles, USA",
+    "vessel_voyage": "HMM GARNET 0045E",
+    "etd": "2026-12-20",
+    "eta": "2027-01-06",
+    "shipping_mark": "GLT / LOS ANGELES / C/NO. 1-UP / MADE IN KOREA"
+  },
+  "documents": [
+    {
+      "type": "PI",
+      "number": "PI-D2026-001",
+      "file": "PI-D2026-001.xlsx",
+      "revision": 0,
+      "sha256": "fcd570c450ae1021dfc555a3171dfa11e66c348094a474bda0df0640c6416e83",
+      "content_sha256": "9995a712c048353b668eb2577cc28eb3a4fb8c833c56f91ab1ae5b743a220575"
+    },
+    {
+      "type": "CI",
+      "number": "CI-D2026-001",
+      "file": "CI-D2026-001.xlsx",
+      "revision": 0,
+      "sha256": "a46c7f212f00b187cb27704c14ecdfc03268cd0c72d9298d8ba6ce69d311d61f",
+      "content_sha256": "e804b2311bc893f951e05a749a724fe92a9567aafd4652bbf16248c9bb91edd7"
+    },
+    {
+      "type": "PL",
+      "number": "PL-D2026-001",
+      "file": "PL-D2026-001.xlsx",
+      "revision": 0,
+      "sha256": "377f51d9f76fc958f8b4d8c3e372687cddfe4ea6450145b1696c9528a04c3a26",
+      "content_sha256": "94a5f3c98a36c867560204a3360dcae50f9805f3b9369bb3ea7c10e7e9f4475e"
+    },
+    {
+      "type": "SI",
+      "number": "SI-D2026-001",
+      "file": "SI-D2026-001.xlsx",
+      "revision": 0,
+      "sha256": "ad773b507ab5bb47ef0d2f12c08026a7aeaab08f2446aca2f2b40182518ecce2",
+      "content_sha256": "ca89b6f84c14d8c1a3db4f193f5b8c14b7dc52eb6a0547fecf6f6e9698018dd7"
+    }
+  ],
+  "totals": {
+    "currency": "USD",
+    "contract_amount": 22770.0,
+    "invoice_amount": 22656.0,
+    "goods_amount": 22656.0,
+    "freight": 0.0,
+    "insurance": 0.0,
+    "cartons": 129,
+    "net_weight_kg": 2038.8,
+    "gross_weight_kg": 2283.1,
+    "cbm": 6.633
+  },
+  "lines": [
+    {
+      "no": 1,
+      "sku": "P-100",
+      "description": "Stainless Steel Tumbler 500ml",
+      "hs_code": "9617001000",
+      "origin": "Republic of Korea",
+      "unit": "PCS",
+      "contract_qty": 2400.0,
+      "shipped_qty": 2400.0,
+      "unit_price": 4.8,
+      "amount": 11520.0,
+      "cartons": 50,
+      "net_kg": 768.0,
+      "gross_kg": 875.0,
+      "cbm": 3.3
+    },
+    {
+      "no": 2,
+      "sku": "P-200",
+      "description": "Silicone Kitchen Tongs",
+      "hs_code": "3924100000",
+      "origin": "Republic of Korea",
+      "unit": "PCS",
+      "contract_qty": 3000.0,
+      "shipped_qty": 3000.0,
+      "unit_price": 1.85,
+      "amount": 5550.0,
+      "cartons": 30,
+      "net_kg": 330.0,
+      "gross_kg": 384.0,
+      "cbm": 1.313
+    },
+    {
+      "no": 3,
+      "sku": "P-300",
+      "description": "Bamboo Cutting Board Set",
+      "hs_code": "4419200000",
+      "origin": "Republic of Korea",
+      "unit": "SET",
+      "contract_qty": 600.0,
+      "shipped_qty": 588.0,
+      "unit_price": 9.5,
+      "amount": 5586.0,
+      "cartons": 49,
+      "net_kg": 940.8,
+      "gross_kg": 1024.1,
+      "cbm": 2.02
+    }
+  ],
+  "validation": {
+    "errors": 0,
+    "warnings": 0,
+    "report": "validation.md"
+  },
+  "human_review": [
+    "최종 금액·통화·은행 계좌 확인",
+    "HS코드·원산지 확정(관세사)"
+  ],
+  "handoff": {
+    "customs_logistics_agent": {
+      "documents": [
+        "CI-D2026-001.xlsx",
+        "PL-D2026-001.xlsx",
+        "SI-D2026-001.xlsx"
+      ],
+      "hs_codes": [
+        "3924100000",
+        "4419200000",
+        "9617001000"
+      ],
+      "origin": [
+        "Republic of Korea"
+      ],
+      "packages": 129,
+      "gross_weight_kg": 2283.1,
+      "cbm": 6.633,
+      "invoice_value": 22656.0,
+      "currency": "USD",
+      "incoterm": {
+        "rule": "FOB",
+        "place": "Busan, Korea"
+      },
+      "shipment": {
+        "transport_mode": "sea",
+        "port_of_loading": "Busan, Korea",
+        "port_of_discharge": "Los Angeles, USA",
+        "vessel_voyage": "HMM GARNET 0045E",
+        "etd": "2026-12-20",
+        "eta": "2027-01-06",
+        "shipping_mark": "GLT / LOS ANGELES / C/NO. 1-UP / MADE IN KOREA"
+      }
+    },
+    "finance_agent": {
+      "receivable": 22656.0,
+      "currency": "USD",
+      "payment_terms": "T/T 30% in advance, 70% before shipment",
+      "invoice_no": "CI-D2026-001",
+      "doc_date": "2026-11-25",
+      "etd": "2026-12-20",
+      "lc_no": null,
+      "bank_fingerprint": "cc86a702263ebfd0"
+    }
+  },
+  "inputs_sha256": "874b7b4191a2aa2fed04e2b34c5917f889c43f77e5268d48efe46c43a6b61772",
+  "approval": {
+    "approved_by": "Gildong Hong",
+    "approved_at": "2026-11-25T10:28:21"
+  }
+}

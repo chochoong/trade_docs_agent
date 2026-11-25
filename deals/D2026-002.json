@@ -1,0 +1,33 @@
+{
+  "deal_id": "D2026-002",
+  "our_role": "seller",
+  "partner_id": "B002",
+  "doc_date": "2026-11-25",
+  "currency": "USD",
+  "incoterm": {"rule": "CIF", "place": "Tokyo, Japan"},
+  "payment_terms": "Irrevocable L/C at sight",
+  "transport_mode": "sea",
+  "port_of_loading": "Busan, Korea",
+  "port_of_discharge": "Tokyo, Japan",
+  "vessel_voyage": "SINOKOR TOKYO 2611E",
+  "etd": "2026-12-10",
+  "freight": 380,
+  "shipping_mark": "SAKURA / TOKYO / C/NO. 1-UP",
+  "lc": {
+    "lc_no": "LC-JP-778899",
+    "issuing_bank": "EXAMPLE BANK TOKYO",
+    "currency": "USD",
+    "bl_consignee": "TO ORDER OF EXAMPLE BANK TOKYO",
+    "amount": 9000,
+    "tolerance_pct": 5,
+    "latest_shipment_date": "2026-12-05",
+    "expiry_date": "2026-12-31",
+    "partial_shipment": false,
+    "goods_description": "STAINLESS STEEL TUMBLER AND BAMBOO CUTTING BOARD SET"
+  },
+  "items": [
+    {"sku": "P-100", "qty": 1000},
+    {"sku": "P-300", "qty": 400}
+  ],
+  "remarks": "Example with deliberate issues for validation demo (missing insurance, ETD after L/C latest shipment, partial cartons)"
+}

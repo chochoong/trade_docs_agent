@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.~lock*
+
+# 생성 결과물 (deal에서 다시 만들 수 있음, 승인 기록 포함)
+output/
+
+# 컴퓨터별 기록: 사람이 bank-verify로 남긴 계좌 확인 기록, ingest가 보관한 이전 deal
+data/bank_lock.json
+deals/_archive/

@@ -1,0 +1,21 @@
+{
+  "_note": "자사 정보입니다. 값을 실제 정보로 바꾸세요. 은행 정보는 사람만 수정합니다.",
+  "name_en": "HANBIT TRADING CO.",
+  "name_ko": "한빛트레이딩",
+  "address_en": "123, Teheran-ro, Gangnam-gu, Seoul 06234, Republic of Korea",
+  "country": "KR",
+  "business_reg_no": "000-00-00000",
+  "trade_id": "KR00000000",
+  "contact": "Gildong Hong",
+  "email": "sales@example.com",
+  "phone": "+82-2-0000-0000",
+  "bank": {
+    "bank_name": "EXAMPLE BANK",
+    "branch": "Gangnam Branch",
+    "swift": "EXAMKRSE",
+    "account_no": "000-000000-00-000",
+    "beneficiary": "HANBIT TRADING CO.",
+    "verified_on": "2026-11-01"
+  },
+  "signatory": "Gildong Hong / CEO"
+}

@@ -1,0 +1,23 @@
+{
+  "deal_id": "D2026-001",
+  "our_role": "seller",
+  "partner_id": "B001",
+  "doc_date": "2026-11-25",
+  "currency": "USD",
+  "incoterm": {"rule": "FOB", "place": "Busan, Korea"},
+  "payment_terms": "T/T 30% in advance, 70% before shipment",
+  "transport_mode": "sea",
+  "port_of_loading": "Busan, Korea",
+  "port_of_discharge": "Los Angeles, USA",
+  "vessel_voyage": "HMM GARNET 0045E",
+  "etd": "2026-12-20",
+  "eta": "2027-01-06",
+  "shipping_mark": "GLT / LOS ANGELES / C/NO. 1-UP / MADE IN KOREA",
+  "items": [
+    {"sku": "P-100", "qty": 2400},
+    {"sku": "P-200", "qty": 3000, "unit_price": 1.85},
+    {"sku": "P-300", "qty": 600, "shipped_qty": 588, "change_reason": "Short shipment of 12 sets (1 carton) agreed by buyer email 2026-12-15"}
+  ],
+  "remarks": "Sample example deal (FOB export)",
+  "source": {"agent": "communication-agent", "ref": "email thread 2026-11-24"}
+}

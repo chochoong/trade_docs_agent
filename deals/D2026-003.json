@@ -1,0 +1,17 @@
+{
+  "deal_id": "D2026-003",
+  "our_role": "buyer",
+  "partner_id": "S001",
+  "doc_date": "2026-11-25",
+  "currency": "USD",
+  "incoterm": {"rule": "FOB", "place": "Ningbo, China"},
+  "payment_terms": "T/T 30% deposit, 70% against B/L copy",
+  "transport_mode": "sea",
+  "port_of_loading": "Ningbo, China",
+  "port_of_discharge": "Busan, Korea",
+  "etd": "2027-01-15",
+  "items": [
+    {"sku": "P-200", "qty": 5000, "unit_price": 0.92, "origin": "China"}
+  ],
+  "remarks": "Import purchase order example"
+}

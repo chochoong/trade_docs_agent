@@ -1,0 +1,17 @@
+{
+  "event": "lc_received",
+  "deal_id": "D2026-002",
+  "lc": {
+    "lc_no": "LC-JP-778899",
+    "issuing_bank": "EXAMPLE BANK TOKYO",
+    "currency": "USD",
+    "amount": 9000,
+    "tolerance_pct": 5,
+    "latest_shipment_date": "2026-12-15",
+    "expiry_date": "2027-01-05",
+    "partial_shipment": false,
+    "goods_description": "STAINLESS STEEL TUMBLER AND BAMBOO CUTTING BOARD SET",
+    "bl_consignee": "TO ORDER OF EXAMPLE BANK TOKYO"
+  },
+  "source": {"agent": "human", "ref": "advising bank notice"}
+}
