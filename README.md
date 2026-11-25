@@ -32,6 +32,15 @@ python3 scripts/tradedocs.py approve deals/D2026-001.json    # 본인이 검토 
 - `D2026-002`: CIF + L/C 수출. 일부러 문제를 넣어 두어서 검증이 생성을 막습니다.
 - `D2026-003`: 수입 발주서(PO)입니다.
 
+## trade_hub(1인 무역 파이프라인)와 연결
+`../trade_hub` 공용 DB의 견적으로 수입 PO 초안을 만듭니다. 슈퍼바이저가 실행하며, 직접 실행할 수도 있습니다.
+```bash
+pip install -e ../trade_hub                    # 또는 옆 폴더에 trade_hub가 있으면 자동으로 찾음
+python scripts/tradedocs.py from-hub --dry-run
+python scripts/tradedocs.py from-hub
+```
+자세한 규칙은 `interfaces/README.md` 첫 부분에 있습니다.
+
 ## AI 에이전트로 쓰기
 - **Claude Code / Claude 데스크톱**: 이 폴더를 열면 `CLAUDE.md` → `AGENTS.md` 지침을 따릅니다.
   예: "B001 바이어에게 텀블러 960개, 도마세트 240세트 FOB 부산으로 PI 만들어줘"

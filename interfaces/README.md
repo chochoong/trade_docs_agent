@@ -1,5 +1,29 @@
 # 다른 에이전트와 연결하기
 
+## trade_hub 공용 DB (6번 documents) — 기본 연결 방식
+
+1인 무역 파이프라인(`../trade_hub`)과는 공용 SQLite DB로 연결합니다. 슈퍼바이저가 `supervisor.json`의
+`documents` 설정대로 `python scripts/tradedocs.py from-hub`를 실행합니다(환경변수 `TRADE_DB`로 DB 경로를 넘김).
+
+- 대상: 협상·샘플 단계에서 선정된(`selected`) 공급처 줄에 견적이 있고, 그 품목 PO가 없거나 최신 PO 뒤에 견적·통관 판정이 새로 생긴 품목
+  (`scripts/hub_link.py` `PENDING_SQL` = `supervisor.json` `when_sql`, 바꾸면 같이 바꿀 것)
+- 읽기: `products`, `product_suppliers`, `suppliers`, `quotes`, `compliance_checks`
+- 쓰기: `agent_runs`(documents), `documents`(`db.add_document`), `tasks`(kind=document, "PO 초안 검토: <품목>")
+- 수량 = 최신 견적 `min_qty`(첫 구매 한도를 넘으면 한도로 줄임), 지정장소 = `quotes.incoterm_place`(비면 WARNING),
+  원산지 = 사양의 `origin_country`(없으면 공급처 국가 + 추정 WARNING), 통화 USD
+- 검증 ERROR여도 `check_result='error'` 행을 남깁니다(사람이 공용 DB를 고치면 다음 실행에서 다시 만듦)
+- 승인: 사람이 `python scripts/tradedocs.py approve deals/HUB-P<품목>-S<공급처줄>.json` →
+  공용 DB `documents.status='approved'`, 연결된 할 일 done. `trade_hub done`만으로는 승인되지 않습니다
+- 허브에서 만든 `deals/HUB-*.json`은 직접 고치지 말고 공용 DB를 고친 뒤 `from-hub --product <id>`로 다시 만듭니다
+
+```bash
+python scripts/tradedocs.py from-hub --dry-run       # 처리할 품목만 보기
+python scripts/tradedocs.py from-hub                 # 실행 조건에 맞는 품목 전부
+python scripts/tradedocs.py from-hub --product 12    # 한 품목만
+```
+
+아래 JSON 이벤트 방식은 trade_hub 밖의 도구(n8n 등)나 수출 거래용입니다.
+
 이 에이전트는 **파일 기반 JSON 이벤트**로 다른 에이전트와 연결됩니다. 폴더를 공유하거나, n8n·Make 같은 워크플로 도구로
 JSON을 전달하거나, 상위 오케스트레이터 에이전트가 CLI를 호출하는 방식 모두 같은 형식을 씁니다.
 

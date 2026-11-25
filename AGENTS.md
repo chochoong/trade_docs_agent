@@ -43,6 +43,12 @@
 7. **넘기기**: `status: approved`인 `output/<deal_id>/manifest.json`이 다음 에이전트의 입력이 됩니다(`interfaces/README.md` 참고).
    승인 후 deal이 바뀌어 다시 생성하면 바뀐 서류만 개정판(`-R1` 등)이 되고, 다시 승인을 받아야 합니다.
 
+## trade_hub 연결 (수입 PO)
+- 슈퍼바이저가 `python scripts/tradedocs.py from-hub`를 실행해 공용 DB의 견적으로 PO 초안을 만들고,
+  `documents`·`tasks`에 기록합니다(`interfaces/README.md` 참고).
+- 공용 DB에서 쓰는 표는 `agent_runs`, `documents`, `tasks`뿐입니다. 품목 단계 변경, 견적·공급처 수정은 하지 않습니다.
+- `deals/HUB-*.json`은 공용 DB에서 다시 만들어지므로 직접 고치지 않습니다.
+
 ## 사람 확인 필수
 - 최종 금액, 통화, 은행 계좌 정보
 - 계좌 변경을 요청하는 메일이 오면, 그 메일에 적힌 연락처가 아니라 기존에 알고 있던 연락처로 반드시 확인합니다.

@@ -261,8 +261,14 @@ def build_context(deal_path):
         rep.error("ITEMS_TYPE", "items는 배열([...])이어야 합니다.")
         items = []
 
+    # 외부 기준 데이터(trade_hub 공용 DB)에서 온 deal은 거래처·품목 정보를 deal 안에 담아 옵니다
+    # (partner, items[].product). 그 외에는 data/의 CSV 마스터에 있어야 합니다.
+    for c in deal.get("external_checks") or []:
+        if isinstance(c, dict) and c.get("level") in ("ERROR", "WARNING", "INFO"):
+            rep.add(c["level"], c.get("code") or "EXTERNAL", c.get("message") or "")
+
     pid = str(deal.get("partner_id") or "").strip()
-    partner = partners.get(pid)
+    partner = dict(deal["partner"], partner_id=pid) if isinstance(deal.get("partner"), dict) else partners.get(pid)
     if pid and not partner:
         rep.error("PARTNER_MISSING", f"거래처 {pid}가 data/partners.csv에 없습니다.")
 
@@ -273,7 +279,7 @@ def build_context(deal_path):
             rep.error("ITEM_FORMAT", f"{i}번 품목 형식이 잘못되었습니다.")
             continue
         sku = str(it.get("sku") or "").strip()
-        p = products.get(sku)
+        p = _inline_product(sku, it["product"]) if isinstance(it.get("product"), dict) else products.get(sku)
         if not p:
             rep.error("PRODUCT_MISSING", f"{i}번 품목 SKU '{it.get('sku')}'가 data/products.csv에 없습니다.")
             continue
@@ -308,6 +314,7 @@ def build_context(deal_path):
             "name_ko": p["name_ko"], "hs_code": p["hs_code"], "unit": p["unit"],
             "origin": item_origin or p["origin"], "master_origin": p["origin"],
             "origin_source": "deal" if item_origin else "master",
+            "origin_estimated": bool(it.get("origin_estimated")),
             "product_currency": (p.get("currency") or "").strip().upper(),
             "qty": qty, "shipped_qty": shipped, "unit_price": price,
             "master_price": master_price, "price_from_master": price_override is None,
@@ -365,6 +372,18 @@ def inputs_fingerprint(deal_path):
     for p in (Path(deal_path), DATA / "company.json", DATA / "partners.csv", DATA / "products.csv", DATA / "defaults.json"):
         h.update(p.name.encode() + b"\0" + (p.read_bytes() if p.exists() else b"") + b"\0")
     return h.hexdigest()
+
+
+PRODUCT_KEYS = ("name_ko", "name_en", "model", "hs_code", "unit", "unit_price", "currency", "qty_per_carton",
+                "net_kg_per_unit", "gross_kg_per_carton", "carton_l_cm", "carton_w_cm", "carton_h_cm", "origin")
+
+
+def _inline_product(sku, p):
+    """deal 안에 담겨 온 품목 정보를 products.csv 한 줄과 같은 모양으로 맞춥니다."""
+    out = {k: "" for k in PRODUCT_KEYS}
+    out.update({k: "" if v is None else str(v) for k, v in p.items() if k in PRODUCT_KEYS})
+    out["sku"] = sku
+    return out
 
 
 def _party_from_company(c):
@@ -439,7 +458,11 @@ def validate(ctx):
     else:
         group, sea_only, pays_freight, buys_ins = INCOTERMS[rule]
         if not inc.get("place"):
-            rep.error("INCOTERM_PLACE", "인코텀즈 지정장소(place)가 없습니다. 예: FOB Busan, Korea")
+            if ctx["role"] == "buyer":
+                rep.warn("INCOTERM_PLACE_PENDING", "인코텀즈 지정장소가 아직 정해지지 않았습니다(PO 초안). "
+                         "공급처와 확정한 뒤 승인하세요. 예: FOB Ningbo, China")
+            else:
+                rep.error("INCOTERM_PLACE", "인코텀즈 지정장소(place)가 없습니다. 예: FOB Busan, Korea")
         # 지정장소가 실제 선적항/도착지와 맞는지 (EXW·FCA는 장소가 다양해서 제외)
         if rule in ("FAS", "FOB"):
             ref_field = "port_of_loading"
@@ -508,7 +531,12 @@ def validate(ctx):
         if l["shipped_qty"] < 0:
             rep.error("QTY_INVALID", f"{tag}: 선적 수량(shipped_qty)이 음수({l['shipped_qty']})입니다.")
         hs = l["hs_code"].replace(".", "")
-        if not hs.isdigit() or len(hs) not in (6, 8, 10):
+        if l["origin_estimated"]:
+            rep.warn("ORIGIN_ESTIMATED", f"{tag}: 원산지 '{l['origin']}'는 공급처 국가로 추정한 값입니다. "
+                     "무역회사는 공장 위치와 다를 수 있으니 공급처에 확인하세요.")
+        if not hs and ctx["role"] == "buyer":
+            rep.warn("HS_PENDING", f"{tag}: 확정 HS코드가 없어 PO의 HS Code 칸을 비웠습니다(관세사 확인 후 사람이 입력).")
+        elif not hs.isdigit() or len(hs) not in (6, 8, 10):
             rep.error("HS_FORMAT", f"{tag}: HS코드 '{l['hs_code']}' 형식이 잘못되었습니다(6/8/10자리 숫자).")
         else:
             rep.info("HS_CONFIRM", f"{tag}: HS {l['hs_code']}는 후보값입니다. 관세사 확인 필요.")
@@ -532,13 +560,15 @@ def validate(ctx):
         elif ctx["role"] == "seller" and same_cur and l["master_price"] and abs(l["unit_price"] - l["master_price"]) / l["master_price"] > D("0.2"):
             rep.warn("PRICE_DEVIATION", f"{tag}: 단가 {l['unit_price']}가 마스터 단가 {l['master_price']}와 20% 넘게 차이 납니다.")
         if l["qty_per_carton"] <= 0:
-            rep.error("CARTON_SPEC", f"{tag}: qty_per_carton이 없거나 정수가 아니어서 박스 수를 계산할 수 없습니다.")
+            # 수입 PO에는 포장 정보가 필요 없습니다(PL은 공급처가 만듦).
+            if ctx["role"] == "seller":
+                rep.error("CARTON_SPEC", f"{tag}: qty_per_carton이 없거나 정수가 아니어서 박스 수를 계산할 수 없습니다.")
         elif l["shipped_qty"] % l["qty_per_carton"] != 0:
             rest = l["shipped_qty"] % l["qty_per_carton"]
             rep.warn("PARTIAL_CARTON", f"{tag}: 수량 {l['shipped_qty']}가 박스당 {l['qty_per_carton']}의 배수가 아닙니다"
                      f"(마지막 박스 {rest}{l['unit']}). PL에는 마지막 박스 총중량을 "
                      f"{q2(l['last_carton_gross']) if l['last_carton_gross'] is not None else '?'}kg(포장재+내용물 추정)으로 넣었습니다. 실측해 확인하세요.")
-        if l["net_per_ctn"] >= l["gross_per_ctn"]:
+        if (ctx["role"] == "seller" or l["gross_per_ctn"] > 0) and l["net_per_ctn"] >= l["gross_per_ctn"]:
             rep.error("WEIGHT_LOGIC", f"{tag}: 박스당 순중량({q2(l['net_per_ctn'])}kg)이 총중량({l['gross_per_ctn']}kg) 이상입니다. 품목 마스터를 확인하세요.")
         if l["shipped_qty"] != l["qty"]:
             if l["change_reason"]:
@@ -833,7 +863,7 @@ def doc_invoice(ctx, kind, path):
     headers = ["No.", "Description of Goods", "HS Code", "Quantity", "Unit", f"Unit Price\n({cur})", f"Amount\n({cur})"]
     rows = []
     for l in ctx["lines"]:
-        desc = f"{l['description']}\nModel: {l['model']}"
+        desc = l["description"] + (f"\nModel: {l['model']}" if l["model"] else "")
         if kind in ("CI", "PO"):
             desc += f"\nOrigin: {l['origin']}"
         rows.append([l["no"], desc, l["hs_code"], l["shipped_qty"] if shipped else l["qty"], l["unit"],
@@ -1122,6 +1152,9 @@ def _build_doc(ctx, k, path):
 
 def cmd_generate(args):
     ctx = build_context(args.deal)
+    if _as_dict(ctx["deal"].get("source")).get("agent") == "trade_hub":
+        print("이 deal은 trade_hub 공용 DB에서 만든 것입니다. 공용 DB를 고친 뒤 `from-hub --product <id>`로 다시 만드세요.")
+        return 1
     validate(ctx)
     deal = ctx["deal"]
     out = _out_dir(ctx)
@@ -1289,6 +1322,15 @@ def cmd_approve(args):
     if not who or confirm != m["deal_id"]:
         print("입력이 비었거나 일치하지 않아 취소했습니다.")
         return 1
+    if m.get("hub"):
+        # 공용 DB 승인을 먼저 합니다. 실패하면 로컬도 승인하지 않아 두 기록이 어긋나지 않습니다.
+        try:
+            import hub_link
+            hub_link.approve_in_hub(m["hub"], (m.get("documents") or [{}])[0].get("sha256"))
+        except (ValueError, SystemExit) as e:
+            print(f"공용 DB(trade_hub) 승인에 실패해 취소했습니다: {e}")
+            return 1
+        print("  공용 DB(trade_hub): 서류 approved, 연결된 할 일 done")
     now = dt.datetime.now().isoformat(timespec="seconds")
     record = {"approved_by": who, "approved_at": now, "inputs_sha256": ctx["inputs_sha256"],
               "documents": m.get("documents", [])}
@@ -1367,10 +1409,17 @@ def main():
     pg.add_argument("--docs", help="예: PI,CI,PL,SI (기본: 역할별 기본값)")
     pg.add_argument("--pdf", action="store_true", help="LibreOffice로 PDF도 생성")
     pg.add_argument("--force", action="store_true", help="ERROR가 있어도 생성(status=blocked). 형식 오류·계좌 변경은 제외")
+    ph = sub.add_parser("from-hub", help="trade_hub 공용 DB에서 PO 초안 만들기 (슈퍼바이저가 실행)")
+    ph.add_argument("--product", type=int, help="이 품목 id만 처리 (기본: 실행 조건에 맞는 품목 전부)")
+    ph.add_argument("--dry-run", action="store_true", help="처리할 품목만 보여주기")
+    ph.add_argument("--pdf", action="store_true", help="LibreOffice로 PDF도 생성")
     sub.add_parser("bank-verify", help="(사람 전용) 계좌 확인 기록 저장")
     pa = sub.add_parser("approve", help="(사람 전용) 생성된 서류를 검토·승인")
     pa.add_argument("deal")
     args = ap.parse_args()
+    if args.cmd == "from-hub":
+        import hub_link
+        sys.exit(hub_link.cmd_from_hub(args))
     handlers = {"validate": cmd_validate, "generate": cmd_generate, "bank-verify": cmd_bank_verify, "approve": cmd_approve}
     sys.exit(handlers[args.cmd](args))
 
